@@ -1,0 +1,9 @@
+# JetBrains
+/.idea/
+*.sln.iml
+*.DotSettings.user
+
+# Build
+/bin/
+/obj/
+*.txt
