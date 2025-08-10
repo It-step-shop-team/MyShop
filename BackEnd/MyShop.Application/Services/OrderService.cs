@@ -1,50 +1,68 @@
 using MyShop.Application.DTOs;
 using MyShop.Application.Interfaces;
+using MyShop.Application.Common.Errors;
 using MyShop.Domain.Entities;
 using MyShop.Domain.IRepositories;
+using ErrorOr;
 
 namespace MyShop.Application.Services
 {
     public class OrderService(IOrderRepository orderRepository, IUnitOfWork unitOfWork) : IOrderService
     {
-        public async Task<PublicOrderDto> CreateOrderAsync(CreateOrderDto createOrderDto)
+        public async Task<ErrorOr<PublicOrderDto>> CreateOrderAsync(CreateOrderDto createOrderDto)
         {
-            var orderId = Guid.NewGuid();
-            
-            var order = new Order
+            try
             {
-                Id = orderId,
-                UserId = createOrderDto.UserId,
-                OrderDate = DateTime.UtcNow,
-                Status = "Pending",
-                ShippingAddress = createOrderDto.ShippingAddress,
-                OrderItems = createOrderDto.OrderItems?.Select(item => new OrderItem
+                if (createOrderDto == null)
+                    return ErrorTypes.Validation.InvalidOrderData;
+
+                if (createOrderDto.OrderItems == null || !createOrderDto.OrderItems.Any())
+                    return ErrorTypes.Validation.InvalidOrderData;
+
+                var orderId = Guid.NewGuid();
+                
+                var order = new Order
                 {
-                    Id = Guid.NewGuid(),
-                    OrderId = orderId,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    Price = item.Price
-                }),
-            };
+                    Id = orderId,
+                    UserId = createOrderDto.UserId,
+                    OrderDate = DateTime.UtcNow,
+                    Status = "Pending",
+                    ShippingAddress = createOrderDto.ShippingAddress,
+                    OrderItems = createOrderDto.OrderItems.Select(item => new OrderItem
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderId = orderId,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    }).ToList(),
+                };
 
-            var result = await orderRepository.CreateAsync(order);
-            await unitOfWork.SaveChangesAsync();
+                var result = await orderRepository.CreateAsync(order);
+                await unitOfWork.SaveChangesAsync();
 
-            return new PublicOrderDto
+                return new PublicOrderDto
+                {
+                    Id = orderId,
+                    UserId = order.UserId,
+                    OrderDate = order.OrderDate,
+                    Status = order.Status,
+                    ShippingAddress = order.ShippingAddress
+                };
+            }
+            catch (Exception)
             {
-                Id = orderId,
-                UserId = order.UserId,
-                OrderDate = order.OrderDate,
-                Status = order.Status,
-                ShippingAddress = order.ShippingAddress
-            };
+                return ErrorTypes.Validation.InvalidOrderData;
+            }
         }
 
-        public async Task<PublicOrderDto?> GetOrderByIdAsync(Guid orderId)
+        public async Task<ErrorOr<PublicOrderDto?>> GetOrderByIdAsync(Guid orderId)
         {
             var order = await orderRepository.GetByIdAsync(orderId);
-            if (order == null) return null;
+            if (order == null)
+            {
+                return ErrorTypes.NotFound.OrderNotFound;
+            }
 
             return new PublicOrderDto
             {
@@ -56,7 +74,7 @@ namespace MyShop.Application.Services
             };
         }
 
-        public async Task<IEnumerable<PublicOrderDto>> GetOrdersByUserIdAsync(Guid userId)
+        public async Task<ErrorOr<IEnumerable<PublicOrderDto>>> GetOrdersByUserIdAsync(Guid userId)
         {
             var orders = await orderRepository.GetByUserIdAsync(userId);
             return orders.Select(order => new PublicOrderDto
@@ -66,24 +84,44 @@ namespace MyShop.Application.Services
                 OrderDate = order.OrderDate,
                 Status = order.Status,
                 ShippingAddress = order.ShippingAddress
-            });
+            }).ToList();
         }
 
-        public async Task<bool> UpdateOrderStatusAsync(Guid orderId, string status)
+        public async Task<ErrorOr<bool>> UpdateOrderStatusAsync(Guid orderId, string status)
         {
+            var order = await orderRepository.GetByIdAsync(orderId);
+            if (order == null)
+            {
+                return ErrorTypes.NotFound.OrderNotFound;
+            }
+
             var result = await orderRepository.UpdateStatusAsync(orderId, status);
-            await unitOfWork.SaveChangesAsync();
+            if (result)
+            {
+                await unitOfWork.SaveChangesAsync();
+            }
+
             return result;
         }
 
-        public async Task<bool> CancelOrderAsync(Guid orderId)
+        public async Task<ErrorOr<bool>> CancelOrderAsync(Guid orderId)
         {
+            var order = await orderRepository.GetByIdAsync(orderId);
+            if (order == null)
+            {
+                return ErrorTypes.NotFound.OrderNotFound;
+            }
+
             var result = await orderRepository.CancelAsync(orderId);
-            await unitOfWork.SaveChangesAsync();
+            if (result)
+            {
+                await unitOfWork.SaveChangesAsync();
+            }
+
             return result;
         }
 
-        public async Task<IEnumerable<PublicOrderDto>> GetAllOrdersAsync()
+        public async Task<ErrorOr<IEnumerable<PublicOrderDto>>> GetAllOrdersAsync()
         {
             var orders = await orderRepository.GetAllAsync();
             return orders.Select(order => new PublicOrderDto
@@ -93,7 +131,7 @@ namespace MyShop.Application.Services
                 OrderDate = order.OrderDate,
                 Status = order.Status,
                 ShippingAddress = order.ShippingAddress
-            });
+            }).ToList();
         }
     }
 }

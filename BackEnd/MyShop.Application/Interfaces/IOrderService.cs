@@ -1,14 +1,15 @@
 using MyShop.Application.DTOs;
+using ErrorOr;
 
 namespace MyShop.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<PublicOrderDto> CreateOrderAsync(CreateOrderDto createOrderDto);
-        Task<PublicOrderDto?> GetOrderByIdAsync(Guid orderId);
-        Task<IEnumerable<PublicOrderDto>> GetOrdersByUserIdAsync(Guid userId);
-        Task<bool> UpdateOrderStatusAsync(Guid orderId, string status);
-        Task<bool> CancelOrderAsync(Guid orderId);
-        Task<IEnumerable<PublicOrderDto>> GetAllOrdersAsync();
+        Task <ErrorOr<PublicOrderDto>> CreateOrderAsync(CreateOrderDto createOrderDto);
+        Task<ErrorOr<PublicOrderDto?>> GetOrderByIdAsync(Guid orderId);
+        Task<ErrorOr<IEnumerable<PublicOrderDto>>> GetOrdersByUserIdAsync(Guid userId);
+        Task<ErrorOr<bool>> UpdateOrderStatusAsync(Guid orderId, string status);
+        Task<ErrorOr<bool>> CancelOrderAsync(Guid orderId);
+        Task<ErrorOr<IEnumerable<PublicOrderDto>>> GetAllOrdersAsync();
     }
 }

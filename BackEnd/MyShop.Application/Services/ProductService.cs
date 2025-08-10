@@ -1,8 +1,10 @@
 using MyShop.Application.DTOs;
 using MyShop.Application.Interfaces;
+using MyShop.Application.Mappers;
+using MyShop.Application.Common.Errors;
 using MyShop.Domain.IRepositories;
 using MyShop.Domain.Entities;
-
+using ErrorOr;
 
 namespace MyShop.Application.Services
 {
@@ -17,96 +19,92 @@ namespace MyShop.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PublicProductDto> CreateProductAsync(CreateProductDto createProductDto)
+        public async Task<ErrorOr<PublicProductDto>> CreateProductAsync(CreateProductDto createProductDto)
         {
-            var product = new Product
+            try
             {
-                Id = Guid.NewGuid(),
-                Name = createProductDto.Name,
-                Description = createProductDto.Description,
-                Price = createProductDto.Price,
-                StockQuantity = createProductDto.StockQuantity,
-                ImageUrl = createProductDto.ImageUrl,
-                Tags = createProductDto.Tags ,
-                CreatedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow
-            };
+                var product = ProductMapper.ToDatabaseObject(createProductDto);
+                
+                await _productRepository.AddAsync(product);
+                await _unitOfWork.SaveChangesAsync();
 
-            await _productRepository.AddAsync(product);
-            await _unitOfWork.SaveChangesAsync();
-
-            return new PublicProductDto
+                return ProductMapper.ToDto(product);
+            }
+            catch (Exception ex)
             {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                StockQuantity = product.StockQuantity,
-            };
+                return ErrorTypes.Validation.InvalidProductData;
+            }
         }
 
-        public async Task<PublicProductDto?> GetProductByIdAsync(Guid productId)
+        public async Task<ErrorOr<PublicProductDto>> GetProductByIdAsync(Guid productId)
         {
             var product = await _productRepository.GetByIdAsync(productId);
-            if (product == null) return null;
-
-            return new PublicProductDto
+            if (product == null)
             {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                StockQuantity = product.StockQuantity,
-            };
+                return ErrorTypes.NotFound.ProductNotFound;
+            }
+
+            return ProductMapper.ToDto(product);
         }
 
-        public async Task<IEnumerable<PublicProductDto>> GetAllProductsAsync()
+        public async Task<ErrorOr<IEnumerable<PublicProductDto>>> GetAllProductsAsync()
         {
             var products = await _productRepository.GetAllAsync();
-            if (products == null) return Enumerable.Empty<PublicProductDto>();
-            return products.Select(product => new PublicProductDto
+            if (products == null || !products.Any())
             {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                StockQuantity = product.StockQuantity,
-            });
+                return Enumerable.Empty<PublicProductDto>().ToList();
+            }
+
+            return ProductMapper.ToDtoList(products);
         }
 
-        public async Task<PublicProductDto> UpdateProductAsync(UpdateProductDto updateProductDto)
+        public async Task<ErrorOr<PublicProductDto>> UpdateProductAsync(UpdateProductDto updateProductDto)
         {
             var product = await _productRepository.GetByIdAsync(updateProductDto.Id);
             if (product == null)
             {
-                throw new KeyNotFoundException($"Product with ID {updateProductDto.Id} not found");
+                return ErrorTypes.NotFound.ProductNotFound;
             }
 
-            product.Name = updateProductDto.Name;
-            product.Description = updateProductDto.Description;
-            product.Price = updateProductDto.Price;
-            product.StockQuantity = updateProductDto.StockQuantity;
+            // Handle nullable properties appropriately
+            if (updateProductDto.Name != null)
+                product.Name = updateProductDto.Name;
+            if (updateProductDto.Description != null)
+                product.Description = updateProductDto.Description;
+            if (updateProductDto.Price.HasValue)
+                product.Price = updateProductDto.Price.Value;
+            if (updateProductDto.StockQuantity.HasValue)
+                product.StockQuantity = updateProductDto.StockQuantity.Value;
+            if (updateProductDto.ImageUrl != null)
+                product.ImageUrl = updateProductDto.ImageUrl;
+            if (updateProductDto.CategoryId.HasValue)
+            {
+                // TODO: Map Guid CategoryId to CategoryType enum properly
+                // For now, skipping assignment or throw error
+            }
+            
+            product.UpdatedDate = DateTime.UtcNow;
 
             await _productRepository.UpdateAsync(product);
             await _unitOfWork.SaveChangesAsync();
 
-            return new PublicProductDto
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                StockQuantity = product.StockQuantity,
-            };
+            return ProductMapper.ToDto(product);
         }
 
-        public async Task<bool> DeleteProductAsync(Guid productId)
+        public async Task<ErrorOr<bool>> DeleteProductAsync(Guid productId)
         {
+            var product = await _productRepository.GetByIdAsync(productId);
+            if (product == null)
+            {
+                return ErrorTypes.NotFound.ProductNotFound;
+            }
+
             var result = await _productRepository.DeleteAsync(productId);
             if (result)
             {
                 await _unitOfWork.SaveChangesAsync();
             }
+
             return result;
         }
     }

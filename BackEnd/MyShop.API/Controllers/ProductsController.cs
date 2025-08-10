@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyShop.Application.DTOs;
 using MyShop.Application.Interfaces;
+using ErrorOr;
 
 namespace MyShop.API.Controllers
 {
@@ -18,18 +19,23 @@ namespace MyShop.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PublicProductDto>>> GetAllProducts()
         {
-            var products = await _productService.GetAllProductsAsync();
-            return Ok(products);
+            var productsResult = await _productService.GetAllProductsAsync();
+            
+            return productsResult.Match<ActionResult<IEnumerable<PublicProductDto>>>(
+                products => Ok(products),
+                errors => Problem(errors.First().Description)
+            );
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PublicProductDto>> GetProductById(Guid id)
         {
-            var product = await _productService.GetProductByIdAsync(id);
-            if (product == null)
-                return NotFound();
-
-            return Ok(product);
+            var productResult = await _productService.GetProductByIdAsync(id);
+            
+            return productResult.Match<ActionResult<PublicProductDto>>(
+                product => Ok(product),
+                errors => Problem(errors.First().Description)
+            );
         }
 
         [HttpPost]
@@ -38,8 +44,12 @@ namespace MyShop.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var product = await _productService.CreateProductAsync(createProductDto);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+            var productResult = await _productService.CreateProductAsync(createProductDto);
+            
+            return productResult.Match<ActionResult<PublicProductDto>>(
+                product => CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product),
+                errors => Problem(errors.First().Description)
+            );
         }
 
         [HttpPut("{id}")]
@@ -51,18 +61,23 @@ namespace MyShop.API.Controllers
             if (id != updateProductDto.Id)
                 return BadRequest("ID mismatch");
 
-            var product = await _productService.UpdateProductAsync(updateProductDto);
-            return Ok(product);
+            var productResult = await _productService.UpdateProductAsync(updateProductDto);
+            
+            return productResult.Match<IActionResult>(
+                product => Ok(product),
+                errors => Problem(errors.First().Description)
+            );
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
             var result = await _productService.DeleteProductAsync(id);
-            if (!result)
-                return NotFound();
-
-            return NoContent();
+            
+            return result.Match<IActionResult>(
+                success => success ? NoContent() : NotFound(),
+                errors => Problem(errors.First().Description)
+            );
         }
     }
 }
