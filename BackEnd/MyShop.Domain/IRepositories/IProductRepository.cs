@@ -7,8 +7,8 @@ namespace MyShop.Domain.IRepositories
     {
         Task<Product?> GetByIdAsync(Guid id);
         Task<IEnumerable<Product>?> GetAllAsync();
-        Task<IEnumerable<Product>?> GetByCategoryAsync(CategoryType category);
-        Task<IEnumerable<Product>?> GetByTagsAsync(IEnumerable<TagType> tags);
+        Task<IEnumerable<Product>?> GetByCategoryAsync(Category category);
+        Task<IEnumerable<Product>?> GetByTagsAsync(IEnumerable<Tag> tags);
         Task<Product?> AddAsync(Product product);
         Task<Product?> UpdateAsync(Product product);
         Task<bool> DeleteAsync(Guid id);

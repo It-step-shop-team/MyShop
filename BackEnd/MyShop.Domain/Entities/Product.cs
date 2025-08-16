@@ -10,8 +10,9 @@ namespace MyShop.Domain.Entities
         public required decimal Price { get; set; }
         public required int StockQuantity { get; set; }
         public required string ImageUrl { get; set; }
-        public required CategoryType Category { get; set; }
-        public List<TagType>? Tags { get; set; }
+        public required Guid CategoryId { get; set; }
+        public Category? Category { get; set; }
+        public List<Tag>? Tags { get; set; }
         public required DateTime CreatedDate { get; set; }
         public required DateTime UpdatedDate { get; set; }
     }

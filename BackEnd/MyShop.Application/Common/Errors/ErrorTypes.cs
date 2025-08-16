@@ -25,6 +25,10 @@ namespace MyShop.Application.Common.Errors
             public static readonly Error OrderNotFound = Error.NotFound(
                 code: "Order.NotFound",
                 description: "Order not found.");
+            
+            public static readonly Error OrdersNotFound = Error.NotFound(
+                code: "Order.NotFound",
+                description: "Orders not found.");
 
             public static readonly Error ProductNotFound = Error.NotFound(
                 code: "Product.NotFound",
@@ -37,6 +41,14 @@ namespace MyShop.Application.Common.Errors
 
         public static class Conflict
         {
+            public static readonly Error CreateOrder = Error.Conflict(
+                code: "Order.Create",
+                description: "Order create failed.");
+            
+            public static readonly Error UpdateOrder = Error.Conflict(
+                code: "Order.Update",
+                description: "Order update failed.");
+            
             public static readonly Error DuplicateOrderId = Error.Conflict(
                 code: "Order.DuplicateId",
                 description: "Order with this ID already exists.");

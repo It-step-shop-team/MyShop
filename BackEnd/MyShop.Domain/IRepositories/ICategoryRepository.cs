@@ -4,6 +4,7 @@ namespace MyShop.Domain.IRepositories
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<CategoryType>> GetAllCategoriesAsync();
+        Task<Category?> AddAsync(Category category);
+        Task<IEnumerable<Category>?> GetAllAsync();
     }
 }

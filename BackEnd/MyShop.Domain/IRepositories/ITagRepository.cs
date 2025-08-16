@@ -4,6 +4,7 @@ namespace MyShop.Domain.IRepositories
 {
     public interface ITagRepository
     {
-        Task<IEnumerable<TagType>> GetAllTagsAsync();
+        Task<Tag?> AddAsync(Tag tag);
+        Task<IEnumerable<Tag>?> GetAllAsync();
     }
 }

@@ -18,12 +18,12 @@ namespace Myshop.infrastructure.Repositories
             return await context.Products.ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>?> GetByCategoryAsync(CategoryType category)
+        public async Task<IEnumerable<Product>?> GetByCategoryAsync(Category category)
         {
             return await context.Products.Where(p => p.Category == category).ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>?> GetByTagsAsync(IEnumerable<TagType> tags)
+        public async Task<IEnumerable<Product>?> GetByTagsAsync(IEnumerable<Tag> tags)
         {
             return await context.Products
                 .Where(p => p.Tags.Any(tag => tags.Contains(tag)))

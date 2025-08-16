@@ -13,9 +13,9 @@ namespace Myshop.infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<CategoryType>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
-            return await Task.FromResult(Enum.GetValues<CategoryType>());
+            return await Task.FromResult(Enum.GetValues<Category>());
         }
     }
 }

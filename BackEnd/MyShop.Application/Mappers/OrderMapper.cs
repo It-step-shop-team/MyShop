@@ -1,4 +1,5 @@
 using MyShop.Application.DTOs;
+using MyShop.Domain.BaseEntities;
 using MyShop.Domain.Entities;
 
 namespace MyShop.Application.Mappers
@@ -19,7 +20,7 @@ namespace MyShop.Application.Mappers
                 Id = orderId,
                 UserId = dto.UserId,
                 OrderDate = DateTime.UtcNow,
-                Status = "Pending",
+                Status = StatusType.Created,
                 ShippingAddress = dto.ShippingAddress,
                 OrderItems = dto.OrderItems?.Select(item => new OrderItem
                 {
@@ -35,28 +36,28 @@ namespace MyShop.Application.Mappers
         /// <summary>
         /// Converts an Order entity to a PublicOrderDto for client response
         /// </summary>
-        /// <param name="databaseObject">The Order entity from database</param>
+        /// <param name="order">The Order entity from database</param>
         /// <returns>PublicOrderDto for client response</returns>
-        public static PublicOrderDto ToDto(Order databaseObject)
+        public static PublicOrderDto ToDto(Order order)
         {
             return new PublicOrderDto
             {
-                Id = databaseObject.Id,
-                UserId = databaseObject.UserId,
-                OrderDate = databaseObject.OrderDate,
-                Status = databaseObject.Status,
-                ShippingAddress = databaseObject.ShippingAddress
+                Id = order.Id,
+                UserId = order.UserId,
+                OrderDate = order.OrderDate,
+                Status = order.Status,
+                ShippingAddress = order.ShippingAddress
             };
         }
 
         /// <summary>
         /// Converts a list of Order entities to a list of PublicOrderDto
         /// </summary>
-        /// <param name="databaseObjects">List of Order entities</param>
+        /// <param name="orders">List of Order entities</param>
         /// <returns>List of PublicOrderDto</returns>
-        public static List<PublicOrderDto> ToDtoList(IEnumerable<Order> databaseObjects)
+        public static List<PublicOrderDto> ToDtoList(IEnumerable<Order> orders)
         {
-            return databaseObjects.Select(ToDto).ToList();
+            return orders.Select(ToDto).ToList();
         }
     }
 }

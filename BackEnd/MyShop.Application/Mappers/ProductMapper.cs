@@ -1,7 +1,6 @@
 using MyShop.Application.DTOs;
 using MyShop.Application.Endpoints.dto;
 using MyShop.Domain.Entities;
-using MyShop.Domain.BaseEntities;
 
 namespace MyShop.Application.Mappers
 {
@@ -22,7 +21,7 @@ namespace MyShop.Application.Mappers
                 Price = dto.Price,
                 StockQuantity = dto.StockQuantity,
                 ImageUrl = dto.ImageUrl,
-                Category = (CategoryType)dto.CategoryId,
+                CategoryId = dto.CategoryId,
                 Tags = dto.Tags,
                 CreatedDate = DateTime.UtcNow,
                 UpdatedDate = DateTime.UtcNow
@@ -32,39 +31,39 @@ namespace MyShop.Application.Mappers
         /// <summary>
         /// Converts a Product entity to a PublicProductDto for client response
         /// </summary>
-        /// <param name="databaseObject">The Product entity from database</param>
+        /// <param name="product">The Product entity from database</param>
         /// <returns>PublicProductDto for client response</returns>
-        public static PublicProductDto ToDto(Product databaseObject)
+        public static PublicProductDto ToDto(Product product)
         {
             return new PublicProductDto
             {
-                Id = databaseObject.Id,
-                Name = databaseObject.Name,
-                Description = databaseObject.Description,
-                Price = databaseObject.Price,
-                StockQuantity = databaseObject.StockQuantity,
-                Category = databaseObject.Category.ToString(),
-                ImageUrl = databaseObject.ImageUrl,
-                Tags = databaseObject.Tags?.Select(t => t.ToString()).ToList() ?? new List<string>(),
-                CreatedAt = databaseObject.CreatedDate,
-                UpdatedAt = databaseObject.UpdatedDate
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity,
+                Category = product.Category?.Name,
+                ImageUrl = product.ImageUrl,
+                Tags = product.Tags?.Select(t => t.Name).ToList(),
+                CreatedAt = product.CreatedDate,
+                UpdatedAt = product.UpdatedDate
             };
         }
 
         /// <summary>
         /// Converts a Product entity to a ShortPublicProductDto for client response
         /// </summary>
-        /// <param name="databaseObject">The Product entity from database</param>
+        /// <param name="product">The Product entity from database</param>
         /// <returns>ShortPublicProductDto for client response</returns>
-        public static ShortPublicProductDto ToShortDto(Product databaseObject)
+        public static ShortPublicProductDto ToShortDto(Product product)
         {
             return new ShortPublicProductDto
             {
-                Id = databaseObject.Id,
-                Name = databaseObject.Name,
-                Price = databaseObject.Price,
-                ImageUrl = databaseObject.ImageUrl,
-                CategoryName = databaseObject.Category.ToString()
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                ImageUrl = product.ImageUrl,
+                CategoryName = product.Category?.Name
             };
         }
 

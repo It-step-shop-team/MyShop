@@ -13,9 +13,9 @@ namespace Myshop.infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<TagType>> GetAllTagsAsync()
+        public async Task<IEnumerable<Tag>> GetAllTagsAsync()
         {
-            return await Task.FromResult(Enum.GetValues<TagType>());
+            return await Task.FromResult(Enum.GetValues<Tag>());
         }
     }
 }

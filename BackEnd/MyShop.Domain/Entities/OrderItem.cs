@@ -1,5 +1,3 @@
-using MyShop.Domain.Entities;
-
 namespace MyShop.Domain.Entities
 {
     public class OrderItem

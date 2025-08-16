@@ -9,7 +9,7 @@ namespace MyShop.Application.DTOs
         public required string Description { get; init; }
         public required decimal Price { get; init; }
         public required int StockQuantity { get; init; }
-        public required string Category { get; init; }
+        public string? Category { get; init; }
         public required string ImageUrl { get; init; }
         public List<string>? Tags { get; init; }
         public required DateTime CreatedAt { get; set; }

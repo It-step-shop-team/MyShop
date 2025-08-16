@@ -1,4 +1,4 @@
-using MyShop.Domain.Entities;
+using MyShop.Domain.BaseEntities;
 
 namespace MyShop.Domain.Entities
 {
@@ -8,7 +8,7 @@ namespace MyShop.Domain.Entities
         public required Guid UserId { get; set; }
         public ApplicationUser? User { get; set; }
         public required DateTime OrderDate { get; set; }
-        public required string Status { get; set; }
+        public required StatusType Status { get; set; }
         public required string ShippingAddress { get; set; }
         public IEnumerable<OrderItem>? OrderItems { get; set; }
     }
