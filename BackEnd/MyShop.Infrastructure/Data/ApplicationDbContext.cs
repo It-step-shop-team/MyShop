@@ -1,17 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using MyShop.Domain.BaseEntities;
 using MyShop.Domain.Entities;
 
-namespace Myshop.infrastructure.Data
+namespace MyShop.infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+            : base(options) { }
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

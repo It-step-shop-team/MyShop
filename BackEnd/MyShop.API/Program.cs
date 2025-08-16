@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using MyShop.Application.Interfaces;
 using MyShop.Application.Services;
 using MyShop.Domain.IRepositories;
-using Myshop.infrastructure.Data;
-using Myshop.infrastructure.Repositories;
+using MyShop.infrastructure.Data;
+using MyShop.infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 

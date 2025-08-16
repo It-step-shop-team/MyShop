@@ -1,18 +1,11 @@
 using MyShop.Domain.BaseEntities;
 using MyShop.Domain.IRepositories;
-using Myshop.infrastructure.Data;
+using MyShop.infrastructure.Data;
 
-namespace Myshop.infrastructure.Repositories
+namespace MyShop.infrastructure.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository(ApplicationDbContext _context) : ICategoryRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public CategoryRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
             return await Task.FromResult(Enum.GetValues<Category>());

@@ -1,8 +1,8 @@
 using MyShop.Domain.BaseEntities;
 using MyShop.Domain.IRepositories;
-using Myshop.infrastructure.Data;
+using MyShop.infrastructure.Data;
 
-namespace Myshop.infrastructure.Repositories
+namespace MyShop.infrastructure.Repositories
 {
     public class TagRepository : ITagRepository
     {

@@ -1,4 +1,3 @@
-using System.Net;
 using ErrorOr;
 
 namespace MyShop.Application.Common.Errors
@@ -33,6 +32,10 @@ namespace MyShop.Application.Common.Errors
             public static readonly Error ProductNotFound = Error.NotFound(
                 code: "Product.NotFound",
                 description: "Product not found.");
+            
+            public static readonly Error ProductsNotFound = Error.NotFound(
+                code: "Product.NotFound",
+                description: "Product not found.");
 
             public static readonly Error UserNotFound = Error.NotFound(
                 code: "User.NotFound",
@@ -45,9 +48,17 @@ namespace MyShop.Application.Common.Errors
                 code: "Order.Create",
                 description: "Order create failed.");
             
+            public static readonly Error CreateProduct = Error.Conflict(
+                code: "Product.Create",
+                description: "Product create failed.");
+            
             public static readonly Error UpdateOrder = Error.Conflict(
                 code: "Order.Update",
                 description: "Order update failed.");
+
+            public static readonly Error UpdateProduct = Error.Conflict(
+                    code: "Product.Update",
+                    description: "Product update failed.");
             
             public static readonly Error DuplicateOrderId = Error.Conflict(
                 code: "Order.DuplicateId",
@@ -60,6 +71,7 @@ namespace MyShop.Application.Common.Errors
             public static readonly Error DuplicateUserEmail = Error.Conflict(
                 code: "User.DuplicateEmail",
                 description: "User with this email already exists.");
+
         }
 
         public static class Unauthorized

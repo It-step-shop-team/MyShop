@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using MyShop.Domain.BaseEntities;
 using MyShop.Domain.Entities;
 using MyShop.Domain.IRepositories;
-using Myshop.infrastructure.Data;
+using MyShop.infrastructure.Data;
 
-namespace Myshop.infrastructure.Repositories
+namespace MyShop.infrastructure.Repositories
 {
     public class ProductRepository(ApplicationDbContext context) : IProductRepository
     {

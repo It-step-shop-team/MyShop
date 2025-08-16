@@ -39,7 +39,7 @@ namespace MyShop.Application.Services
         {
             var result = await orderRepository.GetByUserIdAsync(userId);
             
-            if (result is null)
+            if (result == null || !result.Any())
                 return ErrorTypes.NotFound.OrdersNotFound;
             
             return OrderMapper.ToDtoList(result);
