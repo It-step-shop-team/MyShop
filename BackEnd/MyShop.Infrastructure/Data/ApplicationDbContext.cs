@@ -1,68 +1,58 @@
 using Microsoft.EntityFrameworkCore;
-using MyShop.Domain.BaseEntities;
 using MyShop.Domain.Entities;
 
-namespace MyShop.infrastructure.Data
+namespace MyShop.Infrastructure.Persistence
 {
+    /// <summary>
+    /// Represents the Entity Framework Core database context for the application.
+    /// Provides DbSets for all entities and applies entity configurations.
+    /// </summary>
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-            : base(options) { }
-        public DbSet<ApplicationUser> Users { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-        
+        /// <summary>
+        /// Initializes a new instance of <see cref="ApplicationDbContext"/> with the specified options.
+        /// </summary>
+        /// <param name="options">The options to be used by the DbContext.</param>
+        public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
+        /// <summary>
+        /// Gets or sets the products in the database.
+        /// </summary>
+        public DbSet<Product> Products { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tags in the database.
+        /// </summary>
+        public DbSet<Tag> Tags { get; set; }
+
+        /// <summary>
+        /// Gets or sets the product-tag relationships in the database.
+        /// </summary>
+        public DbSet<ProductTag> ProductTags { get; set; }
+
+        /// <summary>
+        /// Gets or sets the categories in the database.
+        /// </summary>
+        public DbSet<Category> Categories { get; set; }
+
+        /// <summary>
+        /// Gets or sets the orders in the database.
+        /// </summary>
+        public DbSet<Order> Orders { get; set; }
+
+        /// <summary>
+        /// Gets or sets the order items in the database.
+        /// </summary>
+        public DbSet<OrderItem> OrderItems { get; set; }
+
+        /// <summary>
+        /// Configures the model by applying all entity configurations from the assembly.
+        /// </summary>
+        /// <param name="modelBuilder">The builder used to construct the model for the context.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
-
-            // User configuration
-            modelBuilder.Entity<ApplicationUser>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
-                entity.Property(e => e.PasswordHash).IsRequired();
-                entity.HasIndex(e => e.Email).IsUnique();
-            });
-
-            // Product configuration
-            modelBuilder.Entity<Product>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
-                entity.Property(e => e.Price).HasPrecision(18, 2);
-            });
-
-            // Order configuration
-            modelBuilder.Entity<Order>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Status).HasMaxLength(50);
-                entity.Property(e => e.ShippingAddress).HasMaxLength(500);
-                entity.HasOne(e => e.User)
-                      .WithMany()
-                      .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // OrderItem configuration
-            modelBuilder.Entity<OrderItem>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Price).HasPrecision(18, 2);
-                entity.HasOne(e => e.Order)
-                      .WithMany(o => o.OrderItems)
-                      .HasForeignKey(e => e.OrderId)
-                      .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(e => e.Product)
-                      .WithMany()
-                      .HasForeignKey(e => e.ProductId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
         }
     }
 }

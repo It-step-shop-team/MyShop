@@ -1,24 +1,24 @@
 ﻿namespace MyShop.Domain.Entities
 {
     /// <summary>
-    /// Entity representing a product tag.
-    /// Tags can be used for categorization or filtering of products.
+    /// Entity representing a product category.
+    /// Categories can be used to organize and group products.
     /// </summary>
-    public class Tag
+    public class Category
     {
         /// <summary>
-        /// Unique identifier of the tag.
+        /// Unique identifier of the category.
         /// </summary>
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Name of the tag.
+        /// Name of the category.
         /// </summary>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// Collection of products associated with this tag.
-        /// Represents a many-to-many relationship with the <see cref="Product"/> entity.
+        /// Collection of products associated with this category.
+        /// Represents a one-to-many relationship with the <see cref="Product"/> entity.
         /// </summary>
         public ICollection<Product> Products { get; set; } = new List<Product>();
     }

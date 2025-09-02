@@ -7,3 +7,6 @@
 /bin/
 /obj/
 *.txt
+
+# VS
+.vs

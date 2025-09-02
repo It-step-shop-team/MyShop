@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyShop.Domain.Entities;
 using MyShop.Domain.IRepositories;
-using MyShop.infrastructure.Data;
+
 
 namespace MyShop.infrastructure.Repositories
 {

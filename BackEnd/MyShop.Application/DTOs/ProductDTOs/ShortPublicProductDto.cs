@@ -1,11 +1,15 @@
 namespace MyShop.Application.Endpoints.dto
 {
+    /// <summary>
+    /// A simplified Data Transfer Object (DTO) used for returning 
+    /// short product information, for example in product lists or previews.
+    /// </summary>
     public class ShortPublicProductDto
     {
-        public required Guid Id { get; init; }
-        public required string Name { get; init; }
-        public required decimal Price { get; init; }
-        public required string ImageUrl { get; init; }
-        public string? CategoryName { get; init; }
+        public Guid Id { get; set; }
+        public string Name { get; set; } = default!;
+        public decimal Price { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? CategoryName { get; set; }
     }
 }

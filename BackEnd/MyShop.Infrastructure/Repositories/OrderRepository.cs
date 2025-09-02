@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+
 using MyShop.Domain.Entities;
 using MyShop.Domain.IRepositories;
-using MyShop.infrastructure.Data;
+using MyShop.Infrastructure.Persistence;
 
-namespace MyShop.infrastructure.Repositories
+namespace MyShop.Infrastructure.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
@@ -14,60 +15,42 @@ namespace MyShop.infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Order> CreateAsync(Order order)
+        public async Task<Order?> GetByIdAsync(Guid id) =>
+            await _context.Orders
+                          .Include(o => o.OrderItems)
+                          .ThenInclude(oi => oi.Product)
+                          .ThenInclude(p => p.Category)
+                          .Include(o => o.User)
+                          .FirstOrDefaultAsync(o => o.Id == id);
+
+        public async Task<IEnumerable<Order>> GetAllAsync() =>
+            await _context.Orders
+                          .Include(o => o.OrderItems)
+                          .ThenInclude(oi => oi.Product)
+                          .ThenInclude(p => p.Tags)
+                          .ToListAsync();
+
+        public async Task AddAsync(Order order)
         {
-            var result = (await _context.Orders.AddAsync(order)).Entity;
+            await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
-            return result;
         }
 
-        public async Task<Order?> GetByIdAsync(Guid id)
+        public async Task UpdateAsync(Order order)
         {
-            return await _context.Orders
-                .Include(o => o.User)
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .FirstOrDefaultAsync(o => o.Id == id);
-        }
-
-        public async Task<IEnumerable<Order>> GetByUserIdAsync(Guid userId)
-        {
-            return await _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .Where(o => o.UserId == userId)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
-        }
-
-        public async Task<bool> UpdateStatusAsync(Guid orderId, string status)
-        {
-            var order = await _context.Orders.FindAsync(orderId);
-            if (order == null) return false;
-
-            order.Status = status;
             _context.Orders.Update(order);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> CancelAsync(Guid orderId)
+        public async Task DeleteAsync(Guid id)
         {
-            var order = await _context.Orders.FindAsync(orderId);
-            if (order == null) return false;
-
-            order.Status = "Cancelled";
-            _context.Orders.Update(order);
-            return await _context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<IEnumerable<Order>> GetAllAsync()
-        {
-            return await _context.Orders
-                .Include(o => o.User)
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
+            var order = await _context.Orders.FindAsync(id);
+            if (order != null)
+            {
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
+

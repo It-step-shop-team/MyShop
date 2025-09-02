@@ -4,35 +4,51 @@ using MyShop.Domain.Entities;
 
 namespace MyShop.Application.Mappers
 {
+    /// <summary>
+    /// Provides mapping functions to convert between Product entities and DTOs.
+    /// </summary>
     public static class ProductMapper
     {
         /// <summary>
-        /// Converts a CreateProductDto to a Product entity for database storage
+        /// Converts a <see cref="CreateProductDto"/> into a <see cref="Product"/> entity 
+        /// that can be stored in the database.
         /// </summary>
-        /// <param name="dto">The CreateProductDto to convert</param>
-        /// <returns>Product entity ready for database storage</returns>
+        /// <param name="dto">The DTO containing product creation data.</param>
+        /// <returns>A <see cref="Product"/> entity populated with the given DTO values.</returns>
         public static Product ToDatabaseObject(CreateProductDto dto)
         {
-            return new Product
+            var product = new Product
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid(), // Generate a new unique identifier
                 Name = dto.Name,
                 Description = dto.Description,
                 Price = dto.Price,
                 StockQuantity = dto.StockQuantity,
                 ImageUrl = dto.ImageUrl,
                 CategoryId = dto.CategoryId,
-                Tags = dto.Tags,
-                CreatedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow
+                CreatedDate = DateTime.UtcNow, // Set creation timestamp
+                UpdatedDate = DateTime.UtcNow  // Set update timestamp
             };
+
+            // Map associated tags if provided
+            if (dto.TagIds != null && dto.TagIds.Any())
+            {
+                product.ProductTags = dto.TagIds.Select(tagId => new ProductTag
+                {
+                    ProductId = product.Id,
+                    TagId = tagId
+                }).ToList();
+            }
+
+            return product;
         }
 
         /// <summary>
-        /// Converts a Product entity to a PublicProductDto for client response
+        /// Converts a <see cref="Product"/> entity into a <see cref="PublicProductDto"/> 
+        /// for external API usage.
         /// </summary>
-        /// <param name="product">The Product entity from database</param>
-        /// <returns>PublicProductDto for client response</returns>
+        /// <param name="product">The product entity to map.</param>
+        /// <returns>A <see cref="PublicProductDto"/> containing product details.</returns>
         public static PublicProductDto ToDto(Product product)
         {
             return new PublicProductDto
@@ -42,19 +58,20 @@ namespace MyShop.Application.Mappers
                 Description = product.Description,
                 Price = product.Price,
                 StockQuantity = product.StockQuantity,
-                Category = product.Category?.Name,
+                Category = product.Category?.Name, // Map category name if available
                 ImageUrl = product.ImageUrl,
-                Tags = product.Tags?.Select(t => t.Name).ToList(),
+                Tags = product.ProductTags?.Select(pt => pt.Tag.Name).ToList(), // Extract tag names
                 CreatedAt = product.CreatedDate,
                 UpdatedAt = product.UpdatedDate
             };
         }
 
         /// <summary>
-        /// Converts a Product entity to a ShortPublicProductDto for client response
+        /// Converts a <see cref="Product"/> entity into a <see cref="ShortPublicProductDto"/> 
+        /// with minimal product details (e.g., for product lists).
         /// </summary>
-        /// <param name="product">The Product entity from database</param>
-        /// <returns>ShortPublicProductDto for client response</returns>
+        /// <param name="product">The product entity to map.</param>
+        /// <returns>A <see cref="ShortPublicProductDto"/> with essential product details.</returns>
         public static ShortPublicProductDto ToShortDto(Product product)
         {
             return new ShortPublicProductDto
@@ -68,20 +85,20 @@ namespace MyShop.Application.Mappers
         }
 
         /// <summary>
-        /// Converts a list of Product entities to a list of PublicProductDto
+        /// Maps a collection of <see cref="Product"/> entities to a list of <see cref="PublicProductDto"/>.
         /// </summary>
-        /// <param name="databaseObjects">List of Product entities</param>
-        /// <returns>List of PublicProductDto</returns>
+        /// <param name="databaseObjects">The collection of product entities.</param>
+        /// <returns>A list of <see cref="PublicProductDto"/>.</returns>
         public static List<PublicProductDto> ToDtoList(IEnumerable<Product> databaseObjects)
         {
             return databaseObjects.Select(ToDto).ToList();
         }
 
         /// <summary>
-        /// Converts a list of Product entities to a list of ShortPublicProductDto
+        /// Maps a collection of <see cref="Product"/> entities to a list of <see cref="ShortPublicProductDto"/>.
         /// </summary>
-        /// <param name="databaseObjects">List of Product entities</param>
-        /// <returns>List of ShortPublicProductDto</returns>
+        /// <param name="databaseObjects">The collection of product entities.</param>
+        /// <returns>A list of <see cref="ShortPublicProductDto"/>.</returns>
         public static List<ShortPublicProductDto> ToShortDtoList(IEnumerable<Product> databaseObjects)
         {
             return databaseObjects.Select(ToShortDto).ToList();
