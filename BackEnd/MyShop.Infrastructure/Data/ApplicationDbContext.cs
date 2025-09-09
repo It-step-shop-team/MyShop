@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MyShop.Domain.Entities;
+using MyShop.Domain.ListLikeEntities;
 
-namespace MyShop.Infrastructure.Persistence
+namespace MyShop.Infrastructure.Data
 {
     /// <summary>
     /// Represents the Entity Framework Core database context for the application.
@@ -19,6 +20,8 @@ namespace MyShop.Infrastructure.Persistence
         /// Gets or sets the products in the database.
         /// </summary>
         public DbSet<Product> Products { get; set; }
+        
+        public DbSet<ApplicationUser> Users { get; set; }
 
         /// <summary>
         /// Gets or sets the tags in the database.

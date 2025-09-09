@@ -1,15 +1,12 @@
+using MyShop.Domain.BaseEntities;
+
 namespace MyShop.Domain.Entities
 {
     /// <summary>
     /// Represents an application user with authentication and profile details.
     /// </summary>
-    public class ApplicationUser
+    public class ApplicationUser : DbEntity
     {
-        /// <summary>
-        /// Unique identifier of the user.
-        /// </summary>
-        public required Guid Id { get; set; }
-
         /// <summary>
         /// User's login name.
         /// </summary>
@@ -44,11 +41,6 @@ namespace MyShop.Domain.Entities
         /// Address of the user (optional).
         /// </summary>
         public string? Address { get; set; }
-
-        /// <summary>
-        /// Date and time when the user was created.
-        /// </summary>
-        public required DateTime CreatedDate { get; set; }
 
         /// <summary>
         /// Date and time of the user's last login (optional).

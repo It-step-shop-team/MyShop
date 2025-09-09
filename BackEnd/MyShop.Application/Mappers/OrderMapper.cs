@@ -1,6 +1,6 @@
 using MyShop.Application.DTOs;
-using MyShop.Domain.BaseEntities;
 using MyShop.Domain.Entities;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Application.Mappers
 {
@@ -26,7 +26,7 @@ namespace MyShop.Application.Mappers
                 OrderDate = DateTime.UtcNow,
                 Status = StatusType.Created,
                 ShippingAddress = dto.ShippingAddress,
-                OrderItems = dto.OrderItems?.Select(item => new OrderItem
+                OrderItems = dto.OrderItems.Select(item => new OrderItem
                 {
                     Id = Guid.NewGuid(),
                     OrderId = orderId,

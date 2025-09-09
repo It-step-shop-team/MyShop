@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyShop.Domain.Entities;
-using MyShop.Infrastructure.Persistence;
+using MyShop.Domain.IRepositories;
+using MyShop.Infrastructure.Data;
 
 namespace MyShop.Infrastructure.Repositories
 {
@@ -8,19 +9,8 @@ namespace MyShop.Infrastructure.Repositories
     /// Repository for managing <see cref="Product"/> entities.
     /// Provides methods for retrieving, adding, updating, and deleting products.
     /// </summary>
-    public class ProductRepository
+    public class ProductRepository(ApplicationDbContext context) : IProductRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="ProductRepository"/> with the specified database context.
-        /// </summary>
-        /// <param name="context">The database context to use.</param>
-        public ProductRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         /// <summary>
         /// Retrieves a product by its unique identifier, including its category and associated tags.
         /// </summary>
@@ -28,7 +18,7 @@ namespace MyShop.Infrastructure.Repositories
         /// <returns>The <see cref="Product"/> if found; otherwise, <c>null</c>.</returns>
         public async Task<Product?> GetByIdAsync(Guid id)
         {
-            return await _context.Products
+            return await context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductTags)
                     .ThenInclude(pt => pt.Tag)
@@ -39,12 +29,29 @@ namespace MyShop.Infrastructure.Repositories
         /// Retrieves all products, including their categories and associated tags.
         /// </summary>
         /// <returns>A list of all <see cref="Product"/> entities.</returns>
-        public async Task<List<Product>> GetAllAsync()
+        public async Task<ICollection<Product>> GetAllAsync()
         {
-            return await _context.Products
+            return await context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductTags)
                     .ThenInclude(pt => pt.Tag)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<Product>> GetByCategoryAsync(Guid category) =>
+            await context.Products
+                .Where(p => p.CategoryId == category)
+                .ToListAsync();
+        
+        public async Task<ICollection<Product>> GetByTagsAsync(IEnumerable<Guid> tagIds)
+        {
+            var tagIdList = tagIds.ToList();
+
+            return await context.Products
+                .Include(p => p.ProductTags)
+                .ThenInclude(pt => pt.Tag)
+                .Where(p => p.ProductTags
+                    .Count(pt => tagIdList.Contains(pt.TagId)) == tagIdList.Count)
                 .ToListAsync();
         }
 
@@ -52,34 +59,73 @@ namespace MyShop.Infrastructure.Repositories
         /// Adds a new product to the database.
         /// </summary>
         /// <param name="product">The <see cref="Product"/> to add.</param>
-        public async Task AddAsync(Product product)
-        {
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
-        }
+        public async Task<Product?> AddAsync(Product product) =>
+            (await context.Products.AddAsync(product)).Entity;
+
 
         /// <summary>
         /// Updates an existing product in the database.
         /// </summary>
         /// <param name="product">The <see cref="Product"/> with updated data.</param>
-        public async Task UpdateAsync(Product product)
+        public async Task<Product?> UpdateAsync(Product product)
         {
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
+            Product? productToUpdate = await context.Products.FindAsync(product.Id);
+
+            if (productToUpdate is null)
+                return null;
+            
+            productToUpdate.Name = product.Name;
+            
+            productToUpdate.Description =  product.Description;
+            
+            productToUpdate.CategoryId = product.CategoryId;
+                
+            productToUpdate.Category = null;
+            
+            productToUpdate.ProductTags.Clear();
+            
+            foreach (var tag in product.ProductTags)
+                productToUpdate.ProductTags.Add(tag);
+            
+            productToUpdate.ImageUrl = product.ImageUrl;
+            
+            productToUpdate.Price = product.Price;
+            
+            return productToUpdate;
         }
 
         /// <summary>
         /// Deletes a product by its unique identifier.
         /// </summary>
         /// <param name="id">The unique identifier of the product to delete.</param>
-        public async Task DeleteAsync(Guid id)
+        public async Task<Product?> DeleteAsync(Guid id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
-            }
+            Product? productToDelete = await context.Products.FindAsync(id);
+            
+            if (productToDelete != null)
+                context.Products.Remove(productToDelete);
+
+            return productToDelete;
+        }
+
+        public async Task<ICollection<Product>> SearchAsync(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return new List<Product>();
+
+            searchTerm = searchTerm.ToLower();
+
+            return await context.Products
+                .Include(p => p.Category)
+                .Include(p => p.ProductTags)
+                .ThenInclude(pt => pt.Tag)
+                .Where(p =>
+                    p.Name.ToLower().Contains(searchTerm) ||
+                    (p.Description != null && p.Description.ToLower().Contains(searchTerm)) ||
+                    (p.Category != null && p.Category.Name.ToLower().Contains(searchTerm)) ||
+                    p.ProductTags.Any(pt => pt.Tag != null && pt.Tag.Name.ToLower().Contains(searchTerm))
+                )
+                .ToListAsync();
         }
     }
 }

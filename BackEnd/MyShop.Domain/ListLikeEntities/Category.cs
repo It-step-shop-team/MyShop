@@ -1,16 +1,14 @@
-﻿namespace MyShop.Domain.Entities
+﻿using MyShop.Domain.BaseEntities;
+using MyShop.Domain.Entities;
+
+namespace MyShop.Domain.ListLikeEntities
 {
     /// <summary>
     /// Entity representing a product category.
     /// Categories can be used to organize and group products.
     /// </summary>
-    public class Category
+    public class Category : DbEntity
     {
-        /// <summary>
-        /// Unique identifier of the category.
-        /// </summary>
-        public Guid Id { get; set; }
-
         /// <summary>
         /// Name of the category.
         /// </summary>

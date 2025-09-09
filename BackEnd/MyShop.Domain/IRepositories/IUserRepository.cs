@@ -33,7 +33,7 @@ namespace MyShop.Domain.IRepositories
         /// Retrieves all users.
         /// </summary>
         /// <returns>A collection of all <see cref="ApplicationUser"/> entities; or <c>null</c> if none found.</returns>
-        Task<IEnumerable<ApplicationUser>?> GetAllAsync();
+        Task<ICollection<ApplicationUser>> GetAllAsync();
 
         /// <summary>
         /// Adds a new user to the repository.
@@ -54,6 +54,6 @@ namespace MyShop.Domain.IRepositories
         /// </summary>
         /// <param name="id">The unique identifier of the user to delete.</param>
         /// <returns><c>true</c> if deletion was successful; otherwise, <c>false</c>.</returns>
-        Task<bool> DeleteAsync(Guid id);
+        Task<ApplicationUser?> DeleteAsync(Guid id);
     }
 }

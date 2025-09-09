@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyShop.Domain.Entities;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Infrastructure.Configurations
 {

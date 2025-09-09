@@ -19,11 +19,15 @@ namespace MyShop.Infrastructure.Configurations
             // Primary key
             builder.HasKey(p => p.Id);
 
-            // Title property configuration
-            builder.Property(p => p.Title)
-                   .IsRequired()
-                   .HasMaxLength(200);
+            // Name property configuration
+            builder.Property(p => p.Name)
+                    .IsRequired()
+                    .HasMaxLength(64);
 
+            builder.Property(p => p.Description)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            
             // Price property with decimal type
             builder.Property(p => p.Price)
                    .HasColumnType("decimal(18,2)");

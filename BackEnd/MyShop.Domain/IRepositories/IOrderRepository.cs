@@ -1,4 +1,5 @@
 using MyShop.Domain.Entities;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Domain.IRepositories
 {
@@ -19,24 +20,26 @@ namespace MyShop.Domain.IRepositories
         /// Retrieves all orders.
         /// </summary>
         /// <returns>A collection of all <see cref="Order"/> entities.</returns>
-        Task<IEnumerable<Order>> GetAllAsync();
-
+        Task<ICollection<Order>> GetAllAsync();
+        Task<ICollection<Order>> GetByUserIdAsync(Guid orderId);
         /// <summary>
         /// Adds a new order.
         /// </summary>
         /// <param name="order">The <see cref="Order"/> to add.</param>
-        Task AddAsync(Order order);
+        Task<Order?> AddAsync(Order order);
 
         /// <summary>
         /// Updates an existing order.
         /// </summary>
         /// <param name="order">The <see cref="Order"/> with updated data.</param>
-        Task UpdateAsync(Order order);
+        Task<Order?> UpdateAsync(Order order);
+
+        Task<Order?> UpdateStatusAsync(Guid orderId, StatusType status);
 
         /// <summary>
         /// Deletes an order by its unique identifier.
         /// </summary>
         /// <param name="id">The unique identifier of the order to delete.</param>
-        Task DeleteAsync(Guid id);
+        Task<Order?> DeleteAsync(Guid id);
     }
 }

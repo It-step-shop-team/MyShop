@@ -1,4 +1,5 @@
 using MyShop.Application.DTOs;
+using MyShop.Application.DTOs.ProductDTOs;
 using MyShop.Application.Endpoints.dto;
 using MyShop.Domain.Entities;
 
@@ -26,8 +27,8 @@ namespace MyShop.Application.Mappers
                 StockQuantity = dto.StockQuantity,
                 ImageUrl = dto.ImageUrl,
                 CategoryId = dto.CategoryId,
-                CreatedDate = DateTime.UtcNow, // Set creation timestamp
-                UpdatedDate = DateTime.UtcNow  // Set update timestamp
+                CreatedAt = DateTime.UtcNow, // Set creation timestamp
+                UpdatedAt = DateTime.UtcNow  // Set update timestamp
             };
 
             // Map associated tags if provided
@@ -60,9 +61,9 @@ namespace MyShop.Application.Mappers
                 StockQuantity = product.StockQuantity,
                 Category = product.Category?.Name, // Map category name if available
                 ImageUrl = product.ImageUrl,
-                Tags = product.ProductTags?.Select(pt => pt.Tag.Name).ToList(), // Extract tag names
-                CreatedAt = product.CreatedDate,
-                UpdatedAt = product.UpdatedDate
+                ProductTags = product.ProductTags.Select(pt => pt.Tag!.Name).ToList(), // Extract tag names
+                CreatedAt = product.CreatedAt,
+                UpdatedAt = product.UpdatedAt
             };
         }
 

@@ -1,4 +1,3 @@
-using MyShop.Domain.BaseEntities;
 using MyShop.Domain.Entities;
 
 namespace MyShop.Application.DTOs

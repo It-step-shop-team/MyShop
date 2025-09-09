@@ -4,6 +4,7 @@ using MyShop.Application.Mappers;
 using MyShop.Application.Common.Errors;
 using MyShop.Domain.IRepositories;
 using ErrorOr;
+using MyShop.Application.DTOs.ProductDTOs;
 
 namespace MyShop.Application.Services
 {
@@ -62,7 +63,7 @@ namespace MyShop.Application.Services
         public async Task<ErrorOr<IEnumerable<PublicProductDto>>> GetAllProductsAsync()
         {
             var products = await productRepository.GetAllAsync();
-            if (products is null)
+            if (!products.Any())
                 return ErrorTypes.NotFound.ProductsNotFound;
 
             var result = products.ToList();
@@ -101,7 +102,7 @@ namespace MyShop.Application.Services
             if (updateProductDto.CategoryId != null)
                 product.CategoryId = updateProductDto.CategoryId.Value;
 
-            product.UpdatedDate = DateTime.UtcNow; // Track update timestamp
+            product.UpdatedAt = DateTime.UtcNow; // Track update timestamp
 
             var result = await productRepository.UpdateAsync(product);
 
@@ -120,18 +121,18 @@ namespace MyShop.Application.Services
         /// <returns>
         /// True if deletion succeeded, or an error if the product was not found or deletion failed.
         /// </returns>
-        public async Task<ErrorOr<bool>> DeleteProductAsync(Guid productId)
+        public async Task<ErrorOr<PublicProductDto>> DeleteProductAsync(Guid productId)
         {
             var product = await productRepository.GetByIdAsync(productId);
             if (product == null)
                 return ErrorTypes.NotFound.ProductNotFound;
 
             var result = await productRepository.DeleteAsync(productId);
-            if (result == false)
-                return result;
+            if (result is null)
+                return Error.Validation(code: "ProductValidation", description: "Product not found.");
 
             await unitOfWork.SaveChangesAsync();
-            return result;
+            return ProductMapper.ToDto(result);
         }
     }
 }

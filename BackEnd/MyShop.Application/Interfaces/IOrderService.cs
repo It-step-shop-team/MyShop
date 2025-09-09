@@ -1,5 +1,6 @@
 using MyShop.Application.DTOs;
 using ErrorOr;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Application.Interfaces
 {
@@ -26,7 +27,7 @@ namespace MyShop.Application.Interfaces
         /// An <see cref="ErrorOr{TValue}"/> containing a collection of <see cref="PublicOrderDto"/> 
         /// or an error if no orders are found.
         /// </returns>
-        Task<ErrorOr<IEnumerable<PublicOrderDto>>> GetAllOrdersAsync();
+        Task<ErrorOr<ICollection<PublicOrderDto>>> GetAllOrdersAsync();
 
         /// <summary>
         /// Retrieves all orders associated with a specific user.
@@ -36,7 +37,7 @@ namespace MyShop.Application.Interfaces
         /// An <see cref="ErrorOr{TValue}"/> containing a collection of <see cref="PublicOrderDto"/> 
         /// or an error if no orders are found for the user.
         /// </returns>
-        Task<ErrorOr<IEnumerable<PublicOrderDto>>> GetOrdersByUserIdAsync(Guid userId);
+        Task<ErrorOr<ICollection<PublicOrderDto>>> GetOrdersByUserIdAsync(Guid userId);
 
         /// <summary>
         /// Creates a new order based on the provided data.
@@ -57,7 +58,7 @@ namespace MyShop.Application.Interfaces
         /// An <see cref="ErrorOr{TValue}"/> containing <c>true</c> if the update succeeds, 
         /// or an error if the operation fails.
         /// </returns>
-        Task<ErrorOr<bool>> UpdateOrderStatusAsync(Guid orderId, string status);
+        Task<ErrorOr<PublicOrderDto>> UpdateOrderStatusAsync(Guid orderId, StatusType status);
 
         /// <summary>
         /// Cancels an existing order.
@@ -67,6 +68,6 @@ namespace MyShop.Application.Interfaces
         /// An <see cref="ErrorOr{TValue}"/> containing <c>true</c> if the cancellation succeeds, 
         /// or an error if the operation fails.
         /// </returns>
-        Task<ErrorOr<bool>> CancelOrderAsync(Guid orderId);
+        Task<ErrorOr<PublicOrderDto>> CancelOrderAsync(Guid orderId);
     }
 }

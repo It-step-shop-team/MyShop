@@ -1,48 +1,28 @@
-using Microsoft.EntityFrameworkCore;
-using MyShop.Application.Interfaces;
-using MyShop.Application.Services;
-using MyShop.Domain.IRepositories;
-using MyShop.infrastructure.Data;
-using MyShop.infrastructure.Repositories;
+using MyShop.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Register repositories
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
-// Register services
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IProductService, ProductService>();
-
-
-builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
-});
+
+    builder.Services.AddControllers();
+    builder.Services.AddSwaggerGen();
+    
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    
+    builder.Services.AddDbContext(connectionString);
+
+    // Register repositories
+    builder.Services.AddRepositories();
+    // Register services
+    builder.Services.AddServices();
+
+    builder.Services.AddMyCors();
+}
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    app.UseSwaggerDocumentation();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");

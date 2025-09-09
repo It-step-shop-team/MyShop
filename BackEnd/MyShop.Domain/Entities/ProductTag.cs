@@ -1,4 +1,6 @@
-﻿namespace MyShop.Domain.Entities
+﻿using MyShop.Domain.ListLikeEntities;
+
+namespace MyShop.Domain.Entities
 {
     /// <summary>
     /// Join entity representing the many-to-many relationship between products and tags.
@@ -14,7 +16,7 @@
         /// <summary>
         /// Navigation property to the associated product.
         /// </summary>
-        public Product Product { get; set; } = null!;
+        public Product? Product { get; set; }
 
         /// <summary>
         /// Identifier of the associated tag.
@@ -24,6 +26,6 @@
         /// <summary>
         /// Navigation property to the associated tag.
         /// </summary>
-        public Tag Tag { get; set; } = null!;
+        public Tag? Tag { get; set; }
     }
 }

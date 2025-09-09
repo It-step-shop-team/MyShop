@@ -1,6 +1,6 @@
-using MyShop.Domain.Entities;
+using MyShop.Domain.ListLikeEntities;
 
-namespace MyShop.Domain.Repositories
+namespace MyShop.Domain.IRepositories
 {
     /// <summary>
     /// Repository interface for managing <see cref="Category"/> entities.
@@ -19,24 +19,24 @@ namespace MyShop.Domain.Repositories
         /// Retrieves all categories.
         /// </summary>
         /// <returns>A collection of all <see cref="Category"/> entities.</returns>
-        Task<IEnumerable<Category>> GetAllAsync();
+        Task<ICollection<Category>> GetAllAsync();
 
         /// <summary>
         /// Adds a new category.
         /// </summary>
         /// <param name="category">The <see cref="Category"/> to add.</param>
-        Task AddAsync(Category category);
+        Task<Category?> AddAsync(Category category);
 
         /// <summary>
         /// Updates an existing category.
         /// </summary>
         /// <param name="category">The <see cref="Category"/> with updated data.</param>
-        Task UpdateAsync(Category category);
+        Task<Category?> UpdateAsync(Category category);
 
         /// <summary>
         /// Deletes a category by its unique identifier.
         /// </summary>
         /// <param name="id">The unique identifier of the category to delete.</param>
-        Task DeleteAsync(Guid id);
+        Task<Category?> DeleteAsync(Guid id);
     }
 }

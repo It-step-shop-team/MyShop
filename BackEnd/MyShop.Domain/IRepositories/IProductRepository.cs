@@ -1,5 +1,4 @@
 using MyShop.Domain.Entities;
-using MyShop.Domain.BaseEntities;
 
 namespace MyShop.Domain.IRepositories
 {
@@ -20,21 +19,20 @@ namespace MyShop.Domain.IRepositories
         /// Retrieves all products.
         /// </summary>
         /// <returns>A collection of all <see cref="Product"/> entities; or <c>null</c> if none found.</returns>
-        Task<IEnumerable<Product>?> GetAllAsync();
+        Task<ICollection<Product>> GetAllAsync();
 
         /// <summary>
         /// Retrieves products that belong to a specific category.
         /// </summary>
         /// <param name="category">The category to filter products by.</param>
         /// <returns>A collection of products within the specified category; or <c>null</c> if none found.</returns>
-        Task<IEnumerable<Product>?> GetByCategoryAsync(BaseEntities.Category category);
+        Task<ICollection<Product>> GetByCategoryAsync(Guid category);
 
         /// <summary>
         /// Retrieves products associated with the specified tags.
         /// </summary>
-        /// <param name="tags">A collection of tags to filter products by.</param>
         /// <returns>A collection of products matching the specified tags; or <c>null</c> if none found.</returns>
-        Task<IEnumerable<Product>?> GetByTagsAsync(IEnumerable<Tag> tags);
+        Task<ICollection<Product>> GetByTagsAsync(IEnumerable<Guid> tagsId);
 
         /// <summary>
         /// Adds a new product to the repository.
@@ -55,13 +53,13 @@ namespace MyShop.Domain.IRepositories
         /// </summary>
         /// <param name="id">The unique identifier of the product to delete.</param>
         /// <returns><c>true</c> if deletion was successful; otherwise, <c>false</c>.</returns>
-        Task<bool> DeleteAsync(Guid id);
+        Task<Product?> DeleteAsync(Guid id);
 
         /// <summary>
         /// Searches for products whose titles match the given search term.
         /// </summary>
         /// <param name="searchTerm">The term to search for in product titles.</param>
         /// <returns>A collection of matching products; or <c>null</c> if none found.</returns>
-        Task<IEnumerable<Product>?> SearchAsync(string searchTerm);
+        Task<ICollection<Product>> SearchAsync(string searchTerm);
     }
 }

@@ -31,7 +31,7 @@ namespace MyShop.Domain.Entities
         /// Navigation property to the associated product.
         /// Optional for lazy loading.
         /// </summary>
-        public Product? Product { get; set; }
+        public Product Product { get; set; } = default!;
 
         /// <summary>
         /// Quantity of the product in the order.

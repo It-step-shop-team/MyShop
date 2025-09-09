@@ -1,5 +1,6 @@
 using MyShop.Application.DTOs;
 using ErrorOr;
+using MyShop.Application.DTOs.ProductDTOs;
 
 namespace MyShop.Application.Interfaces
 {
@@ -56,6 +57,6 @@ namespace MyShop.Application.Interfaces
         /// <c>true</c> if the product was successfully deleted; <c>false</c> if the product was not found.
         /// Returns an error if there was a problem during deletion.
         /// </returns>
-        Task<ErrorOr<bool>> DeleteProductAsync(Guid productId);
+        Task<ErrorOr<PublicProductDto>> DeleteProductAsync(Guid productId);
     }
 }

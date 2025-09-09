@@ -15,6 +15,7 @@ namespace MyShop.Infrastructure.Configurations
                 .HasForeignKey(pt => pt.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
             builder.HasOne(pt => pt.Tag)
                 .WithMany(t => t.ProductTags)
                 .HasForeignKey(pt => pt.TagId)

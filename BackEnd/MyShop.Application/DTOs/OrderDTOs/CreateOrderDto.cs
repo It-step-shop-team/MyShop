@@ -24,6 +24,6 @@ namespace MyShop.Application.DTOs
         /// The collection of items included in the order.
         /// Each item is described by <see cref="CreateOrderItemDto"/>.
         /// </summary>
-        public required List<CreateOrderItemDto> OrderItems { get; init; }
+        public required ICollection<CreateOrderItemDto> OrderItems { get; init; }
     }
 }

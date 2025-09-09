@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MyShop.Domain.Entities;
+using MyShop.Domain.ListLikeEntities;
 
-namespace MyShop.Infrastructure.Persistence.Configurations;
+namespace MyShop.Infrastructure.Configurations;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
@@ -13,9 +13,10 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(c => c.Name)
                .IsRequired()
                .HasMaxLength(100);
-
        
         builder.HasMany(c => c.Products)
-               .WithMany(p => p.Categories);
+            .WithOne(p => p.Category)
+            .HasForeignKey(p => p.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

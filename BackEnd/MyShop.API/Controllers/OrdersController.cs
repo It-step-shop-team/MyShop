@@ -1,81 +1,68 @@
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
+using MyShop.API.Extensions;
 using MyShop.Application.DTOs;
 using MyShop.Application.Interfaces;
+using MyShop.Domain.Entities;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class OrdersController : ControllerBase
+    [Route("api/orders")]
+    public class OrdersController(IOrderService orderService) : ControllerBase
     {
-        private readonly IOrderService _orderService;
-
-        public OrdersController(IOrderService orderService)
-        {
-            _orderService = orderService;
-        }
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PublicOrderDto>>> GetAllOrders()
+        public async Task<IActionResult> GetAllOrders()
         {
-            var result = await _orderService.GetAllOrdersAsync();
-            return result.Match<ActionResult<IEnumerable<PublicOrderDto>>>(
-                orders => Ok(orders),
-                errors => Problem(errors.First().Description)
-            );
+            var result = await orderService.GetAllOrdersAsync();
+            return result.GetIActionResult();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PublicOrderDto>> GetOrderById(Guid id)
+        public async Task<IActionResult> GetOrderById(Guid id)
         {
-            var result = await _orderService.GetOrderByIdAsync(id);
-            return result.Match<ActionResult<PublicOrderDto>>(
-                order => order != null ? Ok(order) : NotFound(),
-                errors => Problem(errors.First().Description)
-            );
+            var result = await orderService.GetOrderByIdAsync(id);
+            return result.GetIActionResult();
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<PublicOrderDto>>> GetOrdersByUserId(Guid userId)
+        public async Task<IActionResult> GetOrdersByUserId(Guid userId)
         {
-            var result = await _orderService.GetOrdersByUserIdAsync(userId);
-            return result.Match<ActionResult<IEnumerable<PublicOrderDto>>>(
-                orders => Ok(orders),
-                errors => Problem(errors.First().Description)
-            );
+            var result = await orderService.GetOrdersByUserIdAsync(userId);
+            return result.GetIActionResult();
         }
 
         [HttpPost]
-        public async Task<ActionResult<PublicOrderDto>> CreateOrder([FromBody] CreateOrderDto createOrderDto)
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _orderService.CreateOrderAsync(createOrderDto);
-            return result.Match<ActionResult<PublicOrderDto>>(
-                order => CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order),
-                errors => Problem(errors.First().Description)
-            );
+            var result = await orderService.CreateOrderAsync(createOrderDto);
+            return result.GetIActionResult();
         }
 
         [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] string status)
+        public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] string strStatus)
         {
-            var result = await _orderService.UpdateOrderStatusAsync(id, status);
-            return result.Match<IActionResult>(
-                success => success ? NoContent() : NotFound(),
-                errors => Problem(errors.First().Description)
-            );
+            if (!(Enum.TryParse<StatusType>(strStatus, out var status)))
+            {
+                ErrorOr<Order> error = Error.Validation(
+                    code: "Order.Update.StatusType",
+                    description: "Status type is not found.");
+                return error.GetIActionResult();
+            }
+            
+            var result = await orderService.UpdateOrderStatusAsync(id, status);
+            return result.GetIActionResult();
         }
 
-        [HttpDelete("{id}")]
+        [HttpPost("{id}")]
         public async Task<IActionResult> CancelOrder(Guid id)
         {
-            var result = await _orderService.CancelOrderAsync(id);
-            return result.Match<IActionResult>(
-                success => success ? NoContent() : NotFound(),
-                errors => Problem(errors.First().Description)
-            );
+            var result = await orderService.CancelOrderAsync(id);
+            return result.GetIActionResult();
         }
     }
 }

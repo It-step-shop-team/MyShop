@@ -1,4 +1,5 @@
 using MyShop.Domain.BaseEntities;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Domain.Entities
 {
@@ -6,13 +7,8 @@ namespace MyShop.Domain.Entities
     /// Entity representing a customer order.
     /// Contains information about the order, its status, and related items.
     /// </summary>
-    public class Order
+    public class Order : DbEntity
     {
-        /// <summary>
-        /// Unique identifier of the order.
-        /// </summary>
-        public required Guid Id { get; set; }
-
         /// <summary>
         /// Unique identifier of the user who placed the order.
         /// </summary>
@@ -42,6 +38,6 @@ namespace MyShop.Domain.Entities
         
         /// Collection of items included in the order.
         
-        public IEnumerable<OrderItem>? OrderItems { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

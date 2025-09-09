@@ -1,5 +1,4 @@
-using MyShop.Domain.BaseEntities;
-using MyShop.Domain.Entities;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Domain.IRepositories
 {
@@ -20,24 +19,24 @@ namespace MyShop.Domain.IRepositories
         /// Retrieves all tags.
         /// </summary>
         /// <returns>A collection of all <see cref="Tag"/> entities.</returns>
-        Task<IEnumerable<Tag>> GetAllAsync();
+        Task<ICollection<Tag>> GetAllAsync();
 
         /// <summary>
         /// Adds a new tag to the repository.
         /// </summary>
         /// <param name="tag">The <see cref="Tag"/> to add.</param>
-        Task AddAsync(Tag tag);
+        Task<Tag?> AddAsync(Tag tag);
 
         /// <summary>
         /// Updates an existing tag in the repository.
         /// </summary>
         /// <param name="tag">The <see cref="Tag"/> with updated data.</param>
-        Task UpdateAsync(Tag tag);
+        Task<Tag?> UpdateAsync(Tag tag);
 
         /// <summary>
         /// Deletes a tag by its unique identifier.
         /// </summary>
         /// <param name="id">The unique identifier of the tag to delete.</param>
-        Task DeleteAsync(Guid id);
+        Task<Tag?> DeleteAsync(Guid id);
     }
 }

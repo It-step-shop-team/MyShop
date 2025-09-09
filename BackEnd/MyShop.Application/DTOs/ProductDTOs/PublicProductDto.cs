@@ -1,6 +1,4 @@
-using MyShop.Domain.BaseEntities;
-
-namespace MyShop.Application.DTOs
+namespace MyShop.Application.DTOs.ProductDTOs
 {
     /// <summary>
     /// Data Transfer Object (DTO) used for returning product information
@@ -12,10 +10,10 @@ namespace MyShop.Application.DTOs
         public string Name { get; set; } = default!;
         public string? Description { get; set; }
         public decimal Price { get; set; }
-        public int StockQuantity { get; set; }
+        public int? StockQuantity { get; set; }
         public string? Category { get; set; }
         public string? ImageUrl { get; set; }
-        public List<string>? Tags { get; set; }
+        public List<string>? ProductTags { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

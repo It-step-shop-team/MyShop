@@ -1,4 +1,4 @@
-﻿namespace MyShop.Domain.BaseEntities
+﻿namespace MyShop.Domain.ListLikeEntities
 {
     /// <summary>
     /// Represents the status of an order throughout its lifecycle.

@@ -1,4 +1,4 @@
-using MyShop.Domain.BaseEntities;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Application.DTOs
 {
