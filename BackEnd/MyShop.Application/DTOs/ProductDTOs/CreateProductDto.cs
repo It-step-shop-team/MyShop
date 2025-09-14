@@ -1,13 +1,11 @@
-using MyShop.Domain.Entities;
-
-namespace MyShop.Application.DTOs
+namespace MyShop.Application.DTOs.ProductDTOs
 {
     /// <summary>
     /// Data Transfer Object (DTO) used for creating a new product.
     /// </summary>
     public class CreateProductDto
     {
-        public string Name { get; set; } = default!;
+        public required string Name { get; set; }
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }

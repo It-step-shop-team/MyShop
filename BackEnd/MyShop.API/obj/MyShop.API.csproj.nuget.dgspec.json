@@ -57,6 +57,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.0, )"
@@ -578,9 +582,6 @@
             "projectReferences": {
               "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.Domain\\MyShop.Domain.csproj": {
                 "projectPath": "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.Domain\\MyShop.Domain.csproj"
-              },
-              "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.Infrastructure\\MyShop.Infrastructure.csproj": {
-                "projectPath": "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.Infrastructure\\MyShop.Infrastructure.csproj"
               }
             }
           }
@@ -604,6 +605,14 @@
             "ErrorOr": {
               "target": "Package",
               "version": "[2.0.1, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.0.1, )"
             }
           },
           "imports": [
@@ -1325,6 +1334,9 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
+              "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.Application\\MyShop.Application.csproj": {
+                "projectPath": "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.Application\\MyShop.Application.csproj"
+              },
               "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.Domain\\MyShop.Domain.csproj": {
                 "projectPath": "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.Domain\\MyShop.Domain.csproj"
               }
@@ -1347,9 +1359,17 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
-              "version": "[9.0.4, )"
+              "version": "[9.0.0, )"
             }
           },
           "imports": [

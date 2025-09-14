@@ -1,4 +1,4 @@
-namespace MyShop.Application.Endpoints.dto
+namespace MyShop.Application.DTOs.ProductDTOs
 {
     /// <summary>
     /// A simplified Data Transfer Object (DTO) used for returning 

@@ -14,7 +14,7 @@ namespace MyShop.Domain.Entities
         public required decimal Price { get; set; }
         public int? StockQuantity { get; set; }
         public string? ImageUrl { get; set; }
-        public Guid? CategoryId { get; set; }
+        public required Guid CategoryId { get; set; }
         public Category? Category { get; set; }
         public ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
     }

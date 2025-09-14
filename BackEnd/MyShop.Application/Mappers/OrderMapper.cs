@@ -1,4 +1,4 @@
-using MyShop.Application.DTOs;
+using MyShop.Application.DTOs.OrderDTOs;
 using MyShop.Domain.Entities;
 using MyShop.Domain.ListLikeEntities;
 

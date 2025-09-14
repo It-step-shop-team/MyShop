@@ -9,7 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     
-    builder.Services.AddDbContext(connectionString);
+    Console.WriteLine($"Connection string: {connectionString}");
+
+    builder.Services.AddMyDbContext(connectionString);
+    
+    builder.Services.AddMyAuthentication(builder.Configuration.GetSection("Jwt"));
 
     // Register repositories
     builder.Services.AddRepositories();
@@ -26,5 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 app.Run();

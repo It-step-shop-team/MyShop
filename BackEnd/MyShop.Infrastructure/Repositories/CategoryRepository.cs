@@ -27,7 +27,6 @@ namespace MyShop.Infrastructure.Repositories
         /// <returns>A collection of all <see cref="Category"/> entities.</returns>
         public async Task<ICollection<Category>> GetAllAsync() =>
             await context.Categories
-                          .Include(c => c.Products)
                           .ToListAsync();
 
         /// <summary>

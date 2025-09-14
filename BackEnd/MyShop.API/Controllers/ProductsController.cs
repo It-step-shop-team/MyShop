@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using MyShop.API.Extensions;
-using MyShop.Application.DTOs;
+using MyShop.Application.DTOs.ProductDTOs;
 using MyShop.Application.Interfaces;
 
 namespace MyShop.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/product")]
     public class ProductsController(IProductService productService) : ControllerBase
     {
 
@@ -26,7 +26,7 @@ namespace MyShop.API.Controllers
             return productResult.GetIActionResult();
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
         {
             if (!ModelState.IsValid)
@@ -38,7 +38,7 @@ namespace MyShop.API.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut()]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
         {
             if (!ModelState.IsValid)

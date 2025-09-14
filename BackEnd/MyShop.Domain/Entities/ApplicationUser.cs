@@ -1,4 +1,5 @@
 using MyShop.Domain.BaseEntities;
+using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Domain.Entities
 {
@@ -16,6 +17,10 @@ namespace MyShop.Domain.Entities
         /// Hashed password of the user.
         /// </summary>
         public required string PasswordHash { get; set; }
+        
+        public required Guid RoleId { get; set; }
+        
+        public Role? Role { get; set; }
 
         /// <summary>
         /// Email address of the user.

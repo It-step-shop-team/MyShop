@@ -1,6 +1,6 @@
 using MyShop.Domain.ListLikeEntities;
 
-namespace MyShop.Application.DTOs
+namespace MyShop.Application.DTOs.OrderDTOs
 {
     /// <summary>
     /// Data Transfer Object (DTO) used for returning order information

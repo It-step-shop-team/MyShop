@@ -1,4 +1,3 @@
-using MyShop.Application.DTOs;
 using MyShop.Application.Interfaces;
 using MyShop.Application.Mappers;
 using MyShop.Application.Common.Errors;

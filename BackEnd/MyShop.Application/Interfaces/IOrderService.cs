@@ -1,5 +1,6 @@
 using MyShop.Application.DTOs;
 using ErrorOr;
+using MyShop.Application.DTOs.OrderDTOs;
 using MyShop.Domain.ListLikeEntities;
 
 namespace MyShop.Application.Interfaces

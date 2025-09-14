@@ -2,6 +2,7 @@ using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using MyShop.API.Extensions;
 using MyShop.Application.DTOs;
+using MyShop.Application.DTOs.OrderDTOs;
 using MyShop.Application.Interfaces;
 using MyShop.Domain.Entities;
 using MyShop.Domain.ListLikeEntities;
@@ -9,7 +10,7 @@ using MyShop.Domain.ListLikeEntities;
 namespace MyShop.API.Controllers
 {
     [ApiController]
-    [Route("api/orders")]
+    [Route("api/order")]
     public class OrdersController(IOrderService orderService) : ControllerBase
     {
         [HttpGet]
@@ -26,7 +27,7 @@ namespace MyShop.API.Controllers
             return result.GetIActionResult();
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("byUser/{userId}")]
         public async Task<IActionResult> GetOrdersByUserId(Guid userId)
         {
             var result = await orderService.GetOrdersByUserIdAsync(userId);
@@ -58,7 +59,7 @@ namespace MyShop.API.Controllers
             return result.GetIActionResult();
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("cancel/{id}")]
         public async Task<IActionResult> CancelOrder(Guid id)
         {
             var result = await orderService.CancelOrderAsync(id);

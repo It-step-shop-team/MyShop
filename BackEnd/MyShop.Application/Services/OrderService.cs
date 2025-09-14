@@ -1,8 +1,8 @@
-using MyShop.Application.DTOs;
 using MyShop.Application.Interfaces;
 using MyShop.Application.Common.Errors;
 using MyShop.Domain.IRepositories;
 using ErrorOr;
+using MyShop.Application.DTOs.OrderDTOs;
 using MyShop.Application.Mappers;
 using MyShop.Domain.ListLikeEntities;
 

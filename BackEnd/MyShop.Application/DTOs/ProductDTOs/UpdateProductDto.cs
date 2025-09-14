@@ -1,8 +1,8 @@
-namespace MyShop.Application.DTOs
+namespace MyShop.Application.DTOs.ProductDTOs
 {
     /// <summary>
     /// Data Transfer Object (DTO) used for updating an existing product.
-    /// Allows partial updates — only the provided properties will be updated.
+    /// Allows partial updates ï¿½ only the provided properties will be updated.
     /// </summary>
     public class UpdateProductDto
     {

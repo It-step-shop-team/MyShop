@@ -1,4 +1,4 @@
-namespace MyShop.Application.DTOs
+namespace MyShop.Application.DTOs.OrderDTOs
 {
     /// <summary>
     /// Data Transfer Object (DTO) representing a single item

@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyShop.Application.Interfaces;
 using MyShop.Application.Services;
@@ -12,10 +15,12 @@ namespace MyShop.API.Extensions;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection AddDbContext(this IServiceCollection service, string connectionString)
+    public static IServiceCollection AddMyDbContext(this IServiceCollection service, string connectionString)
     {
         service.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString));
+                options.UseNpgsql(connectionString)
+                    .EnableSensitiveDataLogging() // полезно для дебага
+        );
         
         return service;
     }
@@ -35,6 +40,8 @@ public static class ServiceExtensions
     {
         service.AddScoped<IOrderService, OrderService>();
         service.AddScoped<IProductService, ProductService>();
+        service.AddScoped<ITagService, TagService>();
+        service.AddScoped<ICategoryService, CategoryService>();
 
         return service;
     }
@@ -73,6 +80,29 @@ public static class ServiceExtensions
             });
         });
         
+        return service;
+    }
+    
+    public static IServiceCollection AddMyAuthentication(this IServiceCollection service, IConfiguration jwtSettings)
+    {
+        service.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
+                };
+            });
         return service;
     }
 

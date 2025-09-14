@@ -1,6 +1,4 @@
-using MyShop.Application.DTOs;
 using MyShop.Application.DTOs.ProductDTOs;
-using MyShop.Application.Endpoints.dto;
 using MyShop.Domain.Entities;
 
 namespace MyShop.Application.Mappers
@@ -59,9 +57,13 @@ namespace MyShop.Application.Mappers
                 Description = product.Description,
                 Price = product.Price,
                 StockQuantity = product.StockQuantity,
-                Category = product.Category?.Name, // Map category name if available
+                CategoryId = product.CategoryId, // Map category name if available
                 ImageUrl = product.ImageUrl,
-                ProductTags = product.ProductTags.Select(pt => pt.Tag!.Name).ToList(), // Extract tag names
+                TagsId = product.ProductTags
+                    .Where(pt => pt.Tag != null)
+                    .Select(pt => pt.TagId)
+                    .ToList()
+                , // Extract tag 
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt
             };
