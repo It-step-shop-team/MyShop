@@ -1,7 +1,6 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using MyShop.API.Extensions;
-using MyShop.Application.DTOs;
 using MyShop.Application.DTOs.OrderDTOs;
 using MyShop.Application.Interfaces;
 using MyShop.Domain.Entities;

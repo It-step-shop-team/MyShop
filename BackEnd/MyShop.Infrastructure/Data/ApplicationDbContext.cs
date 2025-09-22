@@ -110,6 +110,12 @@ namespace MyShop.Infrastructure.Data
                 new Tag { Id = Guid.Parse("aaaaaa19-aaaa-aaaa-aaaa-aaaaaaaaaaa9"), Name = "Hot Deal", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new Tag { Id = Guid.Parse("aaaaaa20-aaaa-aaaa-aaaa-aaaaaaaaaaa0"), Name = "Back in Stock", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
             );
+            
+            modelBuilder.Entity<Role>().HasData(
+                new Role{ Id = Guid.Parse("f6f2ad3b-3ec3-4c46-9343-5b4b76f2c8a3"), Name = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Role{ Id = Guid.Parse("92f01cf2-650c-41c6-9137-20845d7d56b7"), Name = "Seller", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Role{ Id = Guid.Parse("d31fb846-64d2-49fb-a8a0-02c39502ff21"), Name = "Admin", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+            );
         }
     }
 }

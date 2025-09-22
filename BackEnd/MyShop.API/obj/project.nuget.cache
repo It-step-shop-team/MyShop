@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "MpDJYm0m9s4=",
+  "dgSpecHash": "X1YlSn5KuaY=",
   "success": true,
   "projectFilePath": "D:\\Документы\\Програмирование\\ASP.NET\\MyShop\\BackEnd\\MyShop.API\\MyShop.API.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\X3X3X3\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\X3X3X3\\.nuget\\packages\\erroror\\2.0.1\\erroror.2.0.1.nupkg.sha512",
     "C:\\Users\\X3X3X3\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\X3X3X3\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.9\\microsoft.aspnetcore.authentication.jwtbearer.9.0.9.nupkg.sha512",

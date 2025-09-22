@@ -9,7 +9,6 @@ namespace MyShop.API.Controllers;
 
 public class TagController(ITagService tagService) : ControllerBase
 {
-    
     [HttpGet]
     public async Task<IActionResult> GetAllOrders() 
     {

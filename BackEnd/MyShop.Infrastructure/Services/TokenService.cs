@@ -4,13 +4,14 @@ using System.Text;
 using ErrorOr;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MyShop.Application.DTOs.UserDTOs;
 using MyShop.Application.Interfaces;
 using MyShop.Domain.Entities;
 using MyShop.Domain.IRepositories;
 
 namespace MyShop.Infrastructure.Services;
 
-public class TokenService(IConfiguration config, IUserRepository userRepository, IRefreshTokenRepository tokenRepository) : ITokenService
+public class TokenService(IConfiguration config, IUnitOfWork unitOfWork , IUserRepository userRepository, IRefreshTokenRepository tokenRepository) : ITokenService
 {
     private double AccessTokenLifetimeMinutes => Convert.ToDouble(config["Jwt:AccessTokenLifetimeMinutes"]);
     
@@ -36,19 +37,20 @@ public class TokenService(IConfiguration config, IUserRepository userRepository,
     {
         return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
     }
-
-    public async Task<ErrorOr<(string AccessToken, string RefreshToken)>> GenerateTokensAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<AuthResponseDto>> GenerateTokensAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var user = await userRepository.GetByIdAsync(userId);
 
         if (user is null)
             return Error.NotFound(code: "JwtToken.User", description: "User not found");
         
-        ICollection<Claim> climes = new List<Claim>();
-        climes.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-        climes.Add(new Claim(ClaimTypes.Role, user.RoleId.ToString()));
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Role, user.RoleId.ToString())
+        };
         
-        var accessToken = GenerateAccessToken(climes);
+        var accessToken = GenerateAccessToken(claims);
         var refreshToken = GenerateRefreshToken();
         
         var refreshTokenEntity = new RefreshToken
@@ -68,16 +70,27 @@ public class TokenService(IConfiguration config, IUserRepository userRepository,
         {
             return Error.Failure("Database", "Failed to save refresh token: " + ex.Message);
         }
-        
-        return (accessToken, refreshToken);
-    }
 
-    public async Task<ErrorOr<(string AccessToken, string RefreshToken)>> RefreshTokensAsync(string oldRefreshToken, CancellationToken cancellationToken = default)
+        await unitOfWork.SaveChangesAsync();
+        
+        AuthResponseDto authResponseDto = new AuthResponseDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+            FullName = $"{user.FirstName} {user.LastName}"
+        };
+        
+        return authResponseDto;
+    }
+    public async Task<ErrorOr<AuthResponseDto>> RefreshTokensAsync(string oldRefreshToken, CancellationToken cancellationToken = default)
     { 
         var oldRefreshTokenEntity = await tokenRepository.GetByTokenAsync(oldRefreshToken, cancellationToken);
         
         if (oldRefreshTokenEntity is null)
             return Error.Conflict(code:"RefreshToken", description: "RefreshToken not found");
+        
+        if (oldRefreshTokenEntity.ExpiresAt < DateTime.UtcNow)
+            return Error.Conflict(code:"RefreshToken", description: "Refresh token expired");
         
         await tokenRepository.DeleteAsync(oldRefreshTokenEntity, cancellationToken);
         
@@ -86,11 +99,13 @@ public class TokenService(IConfiguration config, IUserRepository userRepository,
         if (user is null)
             return Error.NotFound(code: "RefreshToken.User", description: "User not found");
         
-        ICollection<Claim> climes = new List<Claim>();
-        climes.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-        climes.Add(new Claim(ClaimTypes.Role, user.RoleId.ToString()));
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Role, user.RoleId.ToString())
+        };
         
-        var newAccessToken = GenerateAccessToken(climes);
+        var newAccessToken = GenerateAccessToken(claims);
         var newRefreshToken = GenerateRefreshToken();
         
         var refreshTokenEntity = new RefreshToken
@@ -111,9 +126,17 @@ public class TokenService(IConfiguration config, IUserRepository userRepository,
             return Error.Failure("Database", "Failed to save refresh token: " + ex.Message);
         }
         
-        return (newAccessToken, newRefreshToken);
+        await unitOfWork.SaveChangesAsync();
+        
+        AuthResponseDto authResponseDto = new AuthResponseDto
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken,
+            FullName = $"{user.FirstName} {user.LastName}"
+        };
+        
+        return authResponseDto;
     }
-
     public async Task<ErrorOr<string>> RevokeRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         var token = await tokenRepository.GetByTokenAsync(refreshToken, cancellationToken);
@@ -126,6 +149,8 @@ public class TokenService(IConfiguration config, IUserRepository userRepository,
         var result = await tokenRepository.UpdateAsync(token, cancellationToken);
         if (result is null)
             return Error.Conflict(code: "RefreshToken", description: "RefreshToken cannot be revoked");
+        
+        await unitOfWork.SaveChangesAsync();
         
         return result.Token;
     }

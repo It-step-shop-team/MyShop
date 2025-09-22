@@ -8,14 +8,24 @@
     ".NETCoreApp,Version=v9.0": {
       "MyShop.Infrastructure/1.0.0": {
         "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
           "Microsoft.EntityFrameworkCore": "9.0.0",
           "Microsoft.IdentityModel.Tokens": "8.0.1",
           "MyShop.Application": "1.0.0",
           "MyShop.Domain": "1.0.0",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.0"
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.0",
+          "System.IdentityModel.Tokens.Jwt": "8.0.1"
         },
         "runtime": {
           "MyShop.Infrastructure.dll": {}
+        }
+      },
+      "BCrypt.Net-Next/4.0.3": {
+        "runtime": {
+          "lib/net6.0/BCrypt.Net-Next.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0"
+          }
         }
       },
       "ErrorOr/2.0.1": {
@@ -241,9 +251,7 @@
       "MyShop.Application/1.0.0": {
         "dependencies": {
           "ErrorOr": "2.0.1",
-          "Microsoft.IdentityModel.Tokens": "8.0.1",
-          "MyShop.Domain": "1.0.0",
-          "System.IdentityModel.Tokens.Jwt": "8.0.1"
+          "MyShop.Domain": "1.0.0"
         },
         "runtime": {
           "MyShop.Application.dll": {
@@ -267,6 +275,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "BCrypt.Net-Next/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-W+U9WvmZQgi5cX6FS5GDtDoPzUCV4LkBLkywq/kRZhuDwcbavOzcDAr3LXJFqHUi952Yj3LEYoWW0jbEUQChsA==",
+      "path": "bcrypt.net-next/4.0.3",
+      "hashPath": "bcrypt.net-next.4.0.3.nupkg.sha512"
     },
     "ErrorOr/2.0.1": {
       "type": "package",

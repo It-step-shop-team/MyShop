@@ -10,6 +10,7 @@ using MyShop.Domain.IRepositories;
 using MyShop.Infrastructure.Data;
 using MyShop.infrastructure.Repositories;
 using MyShop.Infrastructure.Repositories;
+using MyShop.Infrastructure.Services;
 
 namespace MyShop.API.Extensions;
 
@@ -32,6 +33,7 @@ public static class ServiceExtensions
         service.AddScoped<IProductRepository, ProductRepository>();
         service.AddScoped<ITagRepository, TagRepository>();
         service.AddScoped<IUserRepository, UserRepository>();
+        service.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         
         return service;
     }
@@ -42,6 +44,9 @@ public static class ServiceExtensions
         service.AddScoped<IProductService, ProductService>();
         service.AddScoped<ITagService, TagService>();
         service.AddScoped<ICategoryService, CategoryService>();
+        service.AddScoped<IUserService, UserService>();
+        service.AddScoped<IPasswordHasher, PasswordHasher>();
+        service.AddScoped<ITokenService, TokenService>();
 
         return service;
     }

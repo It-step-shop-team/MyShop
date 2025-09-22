@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyShop.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250910184037_InitialWithSeed")]
-    partial class InitialWithSeed
+    [Migration("20250921231115_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,6 +69,9 @@ namespace MyShop.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -82,6 +85,8 @@ namespace MyShop.Infrastructure.Migrations
 
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -155,7 +160,7 @@ namespace MyShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CategoryId")
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -205,6 +210,38 @@ namespace MyShop.Infrastructure.Migrations
                     b.ToTable("ProductTags");
                 });
 
+            modelBuilder.Entity("MyShop.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("MyShop.Domain.ListLikeEntities.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -230,72 +267,117 @@ namespace MyShop.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7247),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2110),
                             Name = "Electronics",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7503)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2372)
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7746),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2618),
                             Name = "Clothing",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7746)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2618)
                         },
                         new
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7750),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2635),
                             Name = "Books",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7750)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2636)
                         },
                         new
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7753),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2639),
                             Name = "Home & Kitchen",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7754)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2639)
                         },
                         new
                         {
                             Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7756),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2642),
                             Name = "Sports & Outdoors",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7756)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2642)
                         },
                         new
                         {
                             Id = new Guid("66666666-6666-6666-6666-666666666666"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7760),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2660),
                             Name = "Beauty & Health",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7760)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2660)
                         },
                         new
                         {
                             Id = new Guid("77777777-7777-7777-7777-777777777777"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7775),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2662),
                             Name = "Toys & Games",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7775)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2663)
                         },
                         new
                         {
                             Id = new Guid("88888888-8888-8888-8888-888888888888"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7777),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2698),
                             Name = "Automotive",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7778)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2698)
                         },
                         new
                         {
                             Id = new Guid("99999999-9999-9999-9999-999999999999"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7780),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2701),
                             Name = "Pet Supplies",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7781)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2701)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7783),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2703),
                             Name = "Office & Stationery",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 59, DateTimeKind.Utc).AddTicks(7783)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(2703)
+                        });
+                });
+
+            modelBuilder.Entity("MyShop.Domain.ListLikeEntities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("f6f2ad3b-3ec3-4c46-9343-5b4b76f2c8a3"),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 201, DateTimeKind.Utc).AddTicks(1066),
+                            Name = "User",
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 201, DateTimeKind.Utc).AddTicks(1067)
+                        },
+                        new
+                        {
+                            Id = new Guid("92f01cf2-650c-41c6-9137-20845d7d56b7"),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 201, DateTimeKind.Utc).AddTicks(1076),
+                            Name = "Seller",
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 201, DateTimeKind.Utc).AddTicks(1076)
+                        },
+                        new
+                        {
+                            Id = new Guid("d31fb846-64d2-49fb-a8a0-02c39502ff21"),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 201, DateTimeKind.Utc).AddTicks(1078),
+                            Name = "Admin",
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 201, DateTimeKind.Utc).AddTicks(1079)
                         });
                 });
 
@@ -324,143 +406,154 @@ namespace MyShop.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaa1"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4590),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9859),
                             Name = "New",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4591)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9860)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaa2-aaaa-aaaa-aaaa-aaaaaaaaaaa2"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4602),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9870),
                             Name = "Sale",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4602)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9870)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaa3-aaaa-aaaa-aaaa-aaaaaaaaaaa3"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4605),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9872),
                             Name = "Popular",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4636)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9873)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaa4-aaaa-aaaa-aaaa-aaaaaaaaaaa4"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4640),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9875),
                             Name = "Limited Edition",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4640)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9875)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaa5-aaaa-aaaa-aaaa-aaaaaaaaaaa5"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4663),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9877),
                             Name = "Free Shipping",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4663)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9877)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaa6-aaaa-aaaa-aaaa-aaaaaaaaaaa6"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4665),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9879),
                             Name = "Eco-Friendly",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4666)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9880)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaa7-aaaa-aaaa-aaaa-aaaaaaaaaaa7"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4669),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9882),
                             Name = "Handmade",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4669)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9882)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaa8-aaaa-aaaa-aaaa-aaaaaaaaaaa8"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4671),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9884),
                             Name = "Best Seller",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4672)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9884)
                         },
                         new
                         {
                             Id = new Guid("aaaaaaa9-aaaa-aaaa-aaaa-aaaaaaaaaaa9"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4674),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9891),
                             Name = "On Discount",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4675)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9892)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa10-aaaa-aaaa-aaaa-aaaaaaaaaaa0"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4678),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9894),
                             Name = "Limited Stock",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4678)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9894)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa11-aaaa-aaaa-aaaa-aaaaaaaaaaa1"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4680),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9896),
                             Name = "Trending",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4681)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9897)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa12-aaaa-aaaa-aaaa-aaaaaaaaaaa2"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4683),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9899),
                             Name = "Gift",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4684)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9899)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa13-aaaa-aaaa-aaaa-aaaaaaaaaaa3"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4688),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9901),
                             Name = "Seasonal",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4688)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9902)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa14-aaaa-aaaa-aaaa-aaaaaaaaaaa4"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4691),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9904),
                             Name = "Exclusive",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4691)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9904)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa15-aaaa-aaaa-aaaa-aaaaaaaaaaa5"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4694),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9906),
                             Name = "Bundle",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4694)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9906)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa16-aaaa-aaaa-aaaa-aaaaaaaaaaa6"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4696),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9908),
                             Name = "Limited Time Offer",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4697)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9909)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa17-aaaa-aaaa-aaaa-aaaaaaaaaaa7"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4699),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9913),
                             Name = "Preorder",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4699)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9913)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa18-aaaa-aaaa-aaaa-aaaaaaaaaaa8"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4701),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9916),
                             Name = "Popular Choice",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4701)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9917)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa19-aaaa-aaaa-aaaa-aaaaaaaaaaa9"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4713),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9927),
                             Name = "Hot Deal",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4713)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9928)
                         },
                         new
                         {
                             Id = new Guid("aaaaaa20-aaaa-aaaa-aaaa-aaaaaaaaaaa0"),
-                            CreatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4715),
+                            CreatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9930),
                             Name = "Back in Stock",
-                            UpdatedAt = new DateTime(2025, 9, 10, 18, 40, 37, 60, DateTimeKind.Utc).AddTicks(4716)
+                            UpdatedAt = new DateTime(2025, 9, 21, 23, 11, 13, 200, DateTimeKind.Utc).AddTicks(9930)
                         });
+                });
+
+            modelBuilder.Entity("MyShop.Domain.Entities.ApplicationUser", b =>
+                {
+                    b.HasOne("MyShop.Domain.ListLikeEntities.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("MyShop.Domain.Entities.Order", b =>
@@ -498,7 +591,8 @@ namespace MyShop.Infrastructure.Migrations
                     b.HasOne("MyShop.Domain.ListLikeEntities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
                 });
@@ -535,6 +629,11 @@ namespace MyShop.Infrastructure.Migrations
             modelBuilder.Entity("MyShop.Domain.ListLikeEntities.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("MyShop.Domain.ListLikeEntities.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("MyShop.Domain.ListLikeEntities.Tag", b =>

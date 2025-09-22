@@ -5,7 +5,7 @@ using MyShop.Infrastructure.Data;
 
 namespace MyShop.Infrastructure.Repositories;
 
-public class RefreshRepository(ApplicationDbContext context) : IRefreshTokenRepository
+public class RefreshTokenRepository(ApplicationDbContext context) : IRefreshTokenRepository
 {
     public async Task<RefreshToken?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
